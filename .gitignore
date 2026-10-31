@@ -218,3 +218,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# PyCharm project settings
+.idea/
+
+# Local data files
+data/raw/*
+data/processed/*
+
+.idea/
+.idea_backup/
