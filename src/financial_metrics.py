@@ -217,3 +217,31 @@ def calculate_free_cash_flow(companies):
     )
 
     return companies
+
+def calculate_revenue_growth(companies):
+    """Calculate Revenue Growth Percentage safely."""
+
+    companies = companies.copy()
+
+    companies["Revenue"] = pd.to_numeric(
+        companies["Revenue"], errors="coerce"
+    )
+
+    companies["Previous_Revenue"] = pd.to_numeric(
+        companies["Previous_Revenue"], errors="coerce"
+    )
+
+    valid_previous_revenue = companies["Previous_Revenue"].where(
+        companies["Previous_Revenue"] > 0
+    )
+
+    valid_current_revenue = companies["Revenue"].where(
+        companies["Revenue"] >= 0
+    )
+
+    companies["Revenue_Growth_Percent"] = (
+        (valid_current_revenue - valid_previous_revenue)
+        / valid_previous_revenue
+    ) * 100
+
+    return companies

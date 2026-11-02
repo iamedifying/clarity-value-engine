@@ -9,7 +9,8 @@ from src.financial_metrics import (
     calculate_quick_ratio,
     calculate_interest_coverage,
     calculate_operating_cash_flow_ratio,
-    calculate_free_cash_flow
+    calculate_free_cash_flow,
+    calculate_revenue_growth
 )
 
 def test_calculate_profit_margin():
@@ -394,3 +395,50 @@ def test_free_cash_flow_with_missing_capex():
     results = calculate_free_cash_flow(companies)
 
     assert pd.isna(results.loc[0, "Free_Cash_Flow"])
+
+def test_calculate_revenue_growth():
+    companies = pd.DataFrame({
+        "Company": ["Alpha Foods"],
+        "Revenue": [1500],
+        "Previous_Revenue": [1000]
+    })
+
+    results = calculate_revenue_growth(companies)
+
+    assert results.loc[0, "Revenue_Growth_Percent"] == 50.0
+
+
+def test_revenue_growth_with_declining_revenue():
+    companies = pd.DataFrame({
+        "Company": ["Declining Co"],
+        "Revenue": [800],
+        "Previous_Revenue": [1000]
+    })
+
+    results = calculate_revenue_growth(companies)
+
+    assert results.loc[0, "Revenue_Growth_Percent"] == -20.0
+
+
+def test_revenue_growth_with_zero_previous_revenue():
+    companies = pd.DataFrame({
+        "Company": ["New Business Co"],
+        "Revenue": [500],
+        "Previous_Revenue": [0]
+    })
+
+    results = calculate_revenue_growth(companies)
+
+    assert pd.isna(results.loc[0, "Revenue_Growth_Percent"])
+
+
+def test_revenue_growth_with_missing_revenue():
+    companies = pd.DataFrame({
+        "Company": ["Unknown Revenue Co"],
+        "Revenue": [None],
+        "Previous_Revenue": [1000]
+    })
+
+    results = calculate_revenue_growth(companies)
+
+    assert pd.isna(results.loc[0, "Revenue_Growth_Percent"])
