@@ -7,7 +7,8 @@ from src.financial_metrics import (
     calculate_debt_to_equity,
     calculate_current_ratio,
     calculate_quick_ratio,
-    calculate_interest_coverage
+    calculate_interest_coverage,
+    calculate_operating_cash_flow_ratio
 )
 
 def test_calculate_profit_margin():
@@ -298,3 +299,51 @@ def test_interest_coverage_with_operating_loss():
     results = calculate_interest_coverage(companies)
 
     assert results.loc[0, "Interest_Coverage"] == -2.0
+
+def test_calculate_operating_cash_flow_ratio():
+    companies = pd.DataFrame({
+        "Company": ["Alpha Foods", "Beta Foods"],
+        "Operating_Cash_Flow": [700, 200],
+        "Current_Liabilities": [350, 400]
+    })
+
+    results = calculate_operating_cash_flow_ratio(companies)
+
+    assert results.loc[0, "Operating_Cash_Flow_Ratio"] == 2.0
+    assert results.loc[1, "Operating_Cash_Flow_Ratio"] == 0.5
+
+
+def test_operating_cash_flow_ratio_with_zero_liabilities():
+    companies = pd.DataFrame({
+        "Company": ["Zero Liability Co"],
+        "Operating_Cash_Flow": [500],
+        "Current_Liabilities": [0]
+    })
+
+    results = calculate_operating_cash_flow_ratio(companies)
+
+    assert pd.isna(results.loc[0, "Operating_Cash_Flow_Ratio"])
+
+
+def test_operating_cash_flow_ratio_with_missing_cash_flow():
+    companies = pd.DataFrame({
+        "Company": ["Unknown Cash Flow Co"],
+        "Operating_Cash_Flow": [None],
+        "Current_Liabilities": [500]
+    })
+
+    results = calculate_operating_cash_flow_ratio(companies)
+
+    assert pd.isna(results.loc[0, "Operating_Cash_Flow_Ratio"])
+
+
+def test_operating_cash_flow_ratio_with_negative_cash_flow():
+    companies = pd.DataFrame({
+        "Company": ["Negative Cash Flow Co"],
+        "Operating_Cash_Flow": [-200],
+        "Current_Liabilities": [400]
+    })
+
+    results = calculate_operating_cash_flow_ratio(companies)
+
+    assert results.loc[0, "Operating_Cash_Flow_Ratio"] == -0.5

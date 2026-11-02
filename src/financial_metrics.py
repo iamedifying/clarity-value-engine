@@ -174,3 +174,27 @@ def calculate_interest_coverage(companies):
     )
 
     return companies
+
+def calculate_operating_cash_flow_ratio(companies):
+    """Calculate Operating Cash Flow Ratio safely."""
+
+    companies = companies.copy()
+
+    companies["Operating_Cash_Flow"] = pd.to_numeric(
+        companies["Operating_Cash_Flow"], errors="coerce"
+    )
+
+    companies["Current_Liabilities"] = pd.to_numeric(
+        companies["Current_Liabilities"], errors="coerce"
+    )
+
+    valid_liabilities = companies["Current_Liabilities"].where(
+        companies["Current_Liabilities"] > 0
+    )
+
+    companies["Operating_Cash_Flow_Ratio"] = (
+        companies["Operating_Cash_Flow"] / valid_liabilities
+    )
+
+    return companies
+
