@@ -9,7 +9,8 @@ from financial_metrics import (
     calculate_current_ratio,
     calculate_quick_ratio,
     calculate_interest_coverage,
-    calculate_operating_cash_flow_ratio
+    calculate_operating_cash_flow_ratio,
+    calculate_free_cash_flow
 )
 
 # Create our sample company dataset
@@ -28,7 +29,7 @@ companies = pd.DataFrame({
     "Operating_Income": [200, 300, 400],
     "Interest_Expense": [50, 30, 100],
     "Operating_Cash_Flow": [700, 200, 600],
-
+    "Capital_Expenditure": [250, 80, 450]
 })
 
 # Calculate financial metrics
@@ -40,6 +41,7 @@ results = calculate_current_ratio(results)
 results = calculate_quick_ratio(results)
 results = calculate_interest_coverage(results)
 results = calculate_operating_cash_flow_ratio(results)
+results = calculate_free_cash_flow(results)
 
 # Display results
 print("CLARITY VALUE ENGINE")

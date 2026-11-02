@@ -198,3 +198,22 @@ def calculate_operating_cash_flow_ratio(companies):
 
     return companies
 
+def calculate_free_cash_flow(companies):
+    """Calculate Free Cash Flow safely."""
+
+    companies = companies.copy()
+
+    companies["Operating_Cash_Flow"] = pd.to_numeric(
+        companies["Operating_Cash_Flow"], errors="coerce"
+    )
+
+    companies["Capital_Expenditure"] = pd.to_numeric(
+        companies["Capital_Expenditure"], errors="coerce"
+    )
+
+    companies["Free_Cash_Flow"] = (
+        companies["Operating_Cash_Flow"]
+        - companies["Capital_Expenditure"]
+    )
+
+    return companies

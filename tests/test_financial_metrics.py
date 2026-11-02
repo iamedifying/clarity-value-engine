@@ -8,7 +8,8 @@ from src.financial_metrics import (
     calculate_current_ratio,
     calculate_quick_ratio,
     calculate_interest_coverage,
-    calculate_operating_cash_flow_ratio
+    calculate_operating_cash_flow_ratio,
+    calculate_free_cash_flow
 )
 
 def test_calculate_profit_margin():
@@ -347,3 +348,49 @@ def test_operating_cash_flow_ratio_with_negative_cash_flow():
     results = calculate_operating_cash_flow_ratio(companies)
 
     assert results.loc[0, "Operating_Cash_Flow_Ratio"] == -0.5
+def test_calculate_free_cash_flow():
+    companies = pd.DataFrame({
+        "Company": ["Alpha Foods"],
+        "Operating_Cash_Flow": [700],
+        "Capital_Expenditure": [300]
+    })
+
+    results = calculate_free_cash_flow(companies)
+
+    assert results.loc[0, "Free_Cash_Flow"] == 400
+
+
+def test_free_cash_flow_with_zero_result():
+    companies = pd.DataFrame({
+        "Company": ["Break Even Co"],
+        "Operating_Cash_Flow": [500],
+        "Capital_Expenditure": [500]
+    })
+
+    results = calculate_free_cash_flow(companies)
+
+    assert results.loc[0, "Free_Cash_Flow"] == 0
+
+
+def test_free_cash_flow_with_negative_result():
+    companies = pd.DataFrame({
+        "Company": ["High Investment Co"],
+        "Operating_Cash_Flow": [200],
+        "Capital_Expenditure": [350]
+    })
+
+    results = calculate_free_cash_flow(companies)
+
+    assert results.loc[0, "Free_Cash_Flow"] == -150
+
+
+def test_free_cash_flow_with_missing_capex():
+    companies = pd.DataFrame({
+        "Company": ["Unknown CapEx Co"],
+        "Operating_Cash_Flow": [700],
+        "Capital_Expenditure": [None]
+    })
+
+    results = calculate_free_cash_flow(companies)
+
+    assert pd.isna(results.loc[0, "Free_Cash_Flow"])
