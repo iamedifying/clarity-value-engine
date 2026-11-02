@@ -24,3 +24,130 @@ def calculate_profit_margin(companies):
     ) * 100
 
     return companies
+
+
+def calculate_roe(companies):
+    """Calculate Return on Equity (ROE) safely."""
+
+    companies = companies.copy()
+
+    companies["Net_Profit"] = pd.to_numeric(
+        companies["Net_Profit"], errors="coerce"
+    )
+
+    companies["Shareholders_Equity"] = pd.to_numeric(
+        companies["Shareholders_Equity"], errors="coerce"
+    )
+
+    valid_equity = companies["Shareholders_Equity"].where(
+        companies["Shareholders_Equity"] != 0
+    )
+
+    companies["ROE"] = (
+        companies["Net_Profit"] / valid_equity
+    ) * 100
+
+    return companies
+
+
+def calculate_roa(companies):
+    """Calculate Return on Assets (ROA) safely."""
+
+    companies = companies.copy()
+
+    companies["Net_Profit"] = pd.to_numeric(
+        companies["Net_Profit"], errors="coerce"
+    )
+
+    companies["Average_Total_Assets"] = pd.to_numeric(
+        companies["Average_Total_Assets"], errors="coerce"
+    )
+
+    valid_assets = companies["Average_Total_Assets"].where(
+        companies["Average_Total_Assets"] != 0
+    )
+
+    companies["ROA"] = (
+        companies["Net_Profit"] / valid_assets
+    ) * 100
+
+    return companies
+
+
+def calculate_debt_to_equity(companies):
+    """Calculate Debt-to-Equity ratio safely."""
+
+    companies = companies.copy()
+
+    companies["Total_Debt"] = pd.to_numeric(
+        companies["Total_Debt"], errors="coerce"
+    )
+
+    companies["Shareholders_Equity"] = pd.to_numeric(
+        companies["Shareholders_Equity"], errors="coerce"
+    )
+
+    valid_equity = companies["Shareholders_Equity"].where(
+        companies["Shareholders_Equity"] > 0
+    )
+
+    companies["Debt_to_Equity"] = (
+        companies["Total_Debt"] / valid_equity
+    )
+
+    return companies
+
+
+def calculate_current_ratio(companies):
+    """Calculate Current Ratio safely."""
+
+    companies = companies.copy()
+
+    companies["Current_Assets"] = pd.to_numeric(
+        companies["Current_Assets"], errors="coerce"
+    )
+
+    companies["Current_Liabilities"] = pd.to_numeric(
+        companies["Current_Liabilities"], errors="coerce"
+    )
+
+    valid_liabilities = companies["Current_Liabilities"].where(
+        companies["Current_Liabilities"] > 0
+    )
+
+    companies["Current_Ratio"] = (
+        companies["Current_Assets"] / valid_liabilities
+    )
+
+    return companies
+
+def calculate_quick_ratio(companies):
+    """Calculate Quick Ratio safely."""
+
+    companies = companies.copy()
+
+    numeric_columns = [
+        "Current_Assets",
+        "Inventory",
+        "Prepaid_Expenses",
+        "Current_Liabilities"
+    ]
+
+    for column in numeric_columns:
+        companies[column] = pd.to_numeric(
+            companies[column], errors="coerce"
+        )
+
+    quick_assets = (
+        companies["Current_Assets"]
+        - companies["Inventory"]
+        - companies["Prepaid_Expenses"]
+    )
+
+    valid_liabilities = companies["Current_Liabilities"].where(
+        companies["Current_Liabilities"] > 0
+    )
+
+    companies["Quick_Ratio"] = quick_assets / valid_liabilities
+
+    return companies
