@@ -7,7 +7,8 @@ from financial_metrics import (
     calculate_roa,
     calculate_debt_to_equity,
     calculate_current_ratio,
-    calculate_quick_ratio
+    calculate_quick_ratio,
+    calculate_interest_coverage
 )
 
 # Create our sample company dataset
@@ -22,7 +23,9 @@ companies = pd.DataFrame({
     "Current_Assets": [2000, 900, 1200],
     "Inventory": [500, 200, 400],
     "Prepaid_Expenses": [100, 100, 200],
-    "Current_Liabilities": [1000, 600, 800]
+    "Current_Liabilities": [1000, 600, 800],
+    "Operating_Income": [200, 300, 400],
+    "Interest_Expense": [50, 30, 100]
 })
 
 # Calculate financial metrics
@@ -32,6 +35,7 @@ results = calculate_roa(results)
 results = calculate_debt_to_equity(results)
 results = calculate_current_ratio(results)
 results = calculate_quick_ratio(results)
+results = calculate_interest_coverage(results)
 
 # Display results
 print("CLARITY VALUE ENGINE")

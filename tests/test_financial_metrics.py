@@ -6,7 +6,8 @@ from src.financial_metrics import (
     calculate_roa,
     calculate_debt_to_equity,
     calculate_current_ratio,
-    calculate_quick_ratio
+    calculate_quick_ratio,
+    calculate_interest_coverage
 )
 
 def test_calculate_profit_margin():
@@ -206,6 +207,7 @@ def test_current_ratio_with_missing_assets():
 
     assert pd.isna(results.loc[0, "Current_Ratio"])
 
+
 def test_calculate_quick_ratio():
     companies = pd.DataFrame({
         "Company": ["Alpha Foods", "Beta Foods"],
@@ -248,10 +250,51 @@ def test_quick_ratio_with_missing_inventory():
 
     assert pd.isna(results.loc[0, "Quick_Ratio"])
 
-if __name__ == "__main__":
-    test_calculate_profit_margin()
-    test_zero_revenue()
-    test_missing_profit()
-    test_original_data_is_unchanged()
 
-    print("All financial metric tests passed!")
+def test_calculate_interest_coverage():
+    companies = pd.DataFrame({
+        "Company": ["Alpha Foods", "Beta Foods"],
+        "Operating_Income": [500, 600],
+        "Interest_Expense": [100, 200]
+    })
+
+    results = calculate_interest_coverage(companies)
+
+    assert results.loc[0, "Interest_Coverage"] == 5.0
+    assert results.loc[1, "Interest_Coverage"] == 3.0
+
+
+def test_interest_coverage_with_zero_interest():
+    companies = pd.DataFrame({
+        "Company": ["Zero Interest Co"],
+        "Operating_Income": [500],
+        "Interest_Expense": [0]
+    })
+
+    results = calculate_interest_coverage(companies)
+
+    assert pd.isna(results.loc[0, "Interest_Coverage"])
+
+
+def test_interest_coverage_with_missing_income():
+    companies = pd.DataFrame({
+        "Company": ["Unknown Income Co"],
+        "Operating_Income": [None],
+        "Interest_Expense": [100]
+    })
+
+    results = calculate_interest_coverage(companies)
+
+    assert pd.isna(results.loc[0, "Interest_Coverage"])
+
+
+def test_interest_coverage_with_operating_loss():
+    companies = pd.DataFrame({
+        "Company": ["Loss Making Co"],
+        "Operating_Income": [-200],
+        "Interest_Expense": [100]
+    })
+
+    results = calculate_interest_coverage(companies)
+
+    assert results.loc[0, "Interest_Coverage"] == -2.0

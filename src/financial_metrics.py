@@ -151,3 +151,26 @@ def calculate_quick_ratio(companies):
     companies["Quick_Ratio"] = quick_assets / valid_liabilities
 
     return companies
+
+def calculate_interest_coverage(companies):
+    """Calculate Interest Coverage Ratio safely."""
+
+    companies = companies.copy()
+
+    companies["Operating_Income"] = pd.to_numeric(
+        companies["Operating_Income"], errors="coerce"
+    )
+
+    companies["Interest_Expense"] = pd.to_numeric(
+        companies["Interest_Expense"], errors="coerce"
+    )
+
+    valid_interest = companies["Interest_Expense"].where(
+        companies["Interest_Expense"] > 0
+    )
+
+    companies["Interest_Coverage"] = (
+        companies["Operating_Income"] / valid_interest
+    )
+
+    return companies
